@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallie - Nigeria's Premier Stream Challenge</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header class="header">
+        <div class="logo">Smallie</div>
+        <nav class="nav">
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#daily-task">Today's Task</a></li>
+                <li><a href="#contestants">Contestants</a></li>
+                <li><a href="#voting">Vote</a></li>
+                <li><a href="#overview">Overview</a></li>
+            </ul>
+        </nav>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Smallie</h1>
+            <h2>Nigeria's Premier Stream Challenge</h2>
+            <p>7 days. 10 contestants. One winner.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Vote Now</button>
+                <button class="btn btn-secondary">Join as Contestant</button>
+            </div>
+            <div class="hero-info">
+                <span class="vote-price">Vote $0.50</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Task Section -->
+    <section id="daily-task" class="daily-task">
+        <div class="container">
+            <h2>Day {{ current_day }} Task</h2>
+            <div class="task-box">
+                <p>{{ daily_tasks[current_day-1] }}</p>
+                <div class="countdown">
+                    <span id="hours">12</span>h
+                    <span id="minutes">30</span>m
+                    <span id="seconds">00</span>s
+                    <p>remaining</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contestants Section -->
+    <section id="contestants" class="contestants">
+        <div class="container">
+            <h2>Meet The Contestants</h2>
+            <div class="contestants-grid">
+                {% for contestant in contestants %}
+                <div class="contestant-card" data-contestant-id="{{ contestant.id }}">
+                    <div class="contestant-img">
+                        <img src="{{ contestant.image_url }}" alt="{{ contestant.name }}">
+                        <div class="votes-badge">{{ contestant.votes }} votes</div>
+                    </div>
+                    <div class="contestant-info">
+                        <h3>{{ contestant.name }}</h3>
+                        <p class="contestant-location">{{ contestant.age }} | {{ contestant.location }}</p>
+                        <p class="contestant-bio">{{ contestant.bio }}</p>
+                        <button class="btn btn-vote" data-id="{{ contestant.id }}">Vote</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Voting Section -->
+    <section id="voting" class="voting">
+        <div class="container">
+            <h2>Cast Your Vote</h2>
+            <div class="voting-area">
+                <form id="voting-form" class="voting-form">
+                    <div class="form-group">
+                        <label for="contestant-select">Select Contestant</label>
+                        <select id="contestant-select" name="contestant" required>
+                            <option value="" disabled selected>Choose a contestant</option>
+                            {% for contestant in contestants %}
+                            <option value="{{ contestant.id }}">{{ contestant.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vote-count">Number of Votes ($0.50 each)</label>
+                        <div class="vote-counter">
+                            <button type="button" id="decrease-votes" class="counter-btn">-</button>
+                            <input type="number" id="vote-count" name="votes" min="1" value="1">
+                            <button type="button" id="increase-votes" class="counter-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                    </div>
+                    <div class="vote-total">
+                        <p>Total: $<span id="vote-price">0.50</span></p>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Submit Vote</button>
+                </form>
+                <div class="voting-info">
+                    <h3>How Voting Works</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Each vote costs $0.50</li>
+                        <li><i class="fas fa-check-circle"></i> Vote as many times as you want</li>
+                        <li><i class="fas fa-check-circle"></i> Voting closes at midnight daily</li>
+                        <li><i class="fas fa-check-circle"></i> Results are updated in real-time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="overview">
+        <div class="container">
+            <h2>Competition Overview</h2>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>What is Smallie?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Smallie is Nigeria's premier 7-day livestreaming competition that brings together 10 talented individuals from across the country. Contestants showcase their creativity and skills through daily challenges, competing for audience votes and a grand prize.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>How It Works</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Each day for 7 days, contestants are given a task to complete during their livestream. Viewers can watch the streams and vote for their favorite performances. Daily winners receive bonus points, and at the end of the week, the contestant with the most votes is crowned the Smallie Champion.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>Prizes</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <ul>
+                            <li>Grand Prize: ₦5,000,000 and a streaming contract</li>
+                            <li>1st Runner-up: ₦2,000,000</li>
+                            <li>2nd Runner-up: ₦1,000,000</li>
+                            <li>All finalists receive branded merchandise and potential sponsorship opportunities</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>Competition Schedule</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <ul>
+                            <li><strong>Day 1:</strong> Introduction and first challenge</li>
+                            <li><strong>Day 2-6:</strong> Daily challenges and eliminations</li>
+                            <li><strong>Day 7:</strong> Final showcase and winner announcement</li>
+                        </ul>
+                        <p>Streams run from 7:00 PM to 10:00 PM WAT daily.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h3>How to Become a Contestant</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>To join as a contestant for the next season, click the "Join as Contestant" button and fill out the application form. Selection is based on creativity, personality, and audience appeal. Contestants must be Nigerian citizens or residents, 18 years or older.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audience Section -->
+    <section class="audience">
+        <div class="container">
+            <div class="audience-content">
+                <h2>Join The Audience</h2>
+                <p>Be part of the excitement! Watch livestreams, interact with contestants, and vote for your favorites.</p>
+                <div class="audience-stats">
+                    <div class="stat">
+                        <span class="stat-number">50K+</span>
+                        <span class="stat-label">Daily Viewers</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">2M+</span>
+                        <span class="stat-label">Votes Cast</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">7</span>
+                        <span class="stat-label">Days of Fun</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary">Watch Live</button>
+            </div>
+            <div class="audience-image">
+                <img src="https://images.unsplash.com/photo-1634937734976-7b0432527d5d" alt="Nigerian audience">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>About Smallie</h3>
+                    <p>Nigeria's premier livestreaming competition showcasing the best talents across the country in a 7-day challenge. Founded in 2023 to promote Nigerian creativity on global platforms.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#hero">Home</a></li>
+                        <li><a href="#contestants">Contestants</a></li>
+                        <li><a href="#voting">Vote</a></li>
+                        <li><a href="#overview">Rules</a></li>
+                        <li><a href="#">Past Winners</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@smallie.com</li>
+                        <li><i class="fas fa-phone"></i> +234 800 SMALLIE</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</li>
+                    </ul>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smallie - Nigeria's Premier Stream Challenge. All rights reserved.</p>
+                <ul class="footer-legal">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for voting confirmation -->
+    <div id="vote-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Your Vote</h2>
+            <p>You are about to cast <span id="modal-vote-count">1</span> vote(s) for <span id="modal-contestant-name">Contestant</span>.</p>
+            <p>Total: $<span id="modal-vote-total">0.50</span></p>
+            <div class="modal-buttons">
+                <button id="confirm-vote" class="btn btn-primary">Confirm</button>
+                <button id="cancel-vote" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for vote success -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content success-content">
+            <span class="close">&times;</span>
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Thank You!</h2>
+            <p>Your vote has been successfully recorded.</p>
+            <p>Share your support:</p>
+            <div class="social-share">
+                <a href="#" class="btn-share twitter"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="#" class="btn-share facebook"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="#" class="btn-share whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for contestant application -->
+    <div id="application-modal" class="modal">
+        <div class="modal-content application-content">
+            <span class="close">&times;</span>
+            <h2>Apply to be a Contestant</h2>
+            <form id="application-form">
+                <div class="form-group">
+                    <label for="app-name">Full Name</label>
+                    <input type="text" id="app-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-email">Email</label>
+                    <input type="email" id="app-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-phone">Phone Number</label>
+                    <input type="tel" id="app-phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-location">Location in Nigeria</label>
+                    <input type="text" id="app-location" name="location" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-talent">What is your primary talent?</label>
+                    <input type="text" id="app-talent" name="talent" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-why">Why do you want to join Smallie? (100-200 words)</label>
+                    <textarea id="app-why" name="why" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-social">Social Media Handles (if any)</label>
+                    <input type="text" id="app-social" name="social" placeholder="@username">
+                </div>
+                <div class="form-group">
+                    <label for="app-experience">Previous streaming experience (if any)</label>
+                    <textarea id="app-experience" name="experience" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
