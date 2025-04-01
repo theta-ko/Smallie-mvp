@@ -7,7 +7,8 @@
       "config": {
         "runtime": "python3.9",
         "maxLambdaSize": "15mb",
-        "requirementsPath": "requirements-vercel.txt"
+        "requirementsPath": "requirements-vercel.txt",
+        "handler": "index.handler"
       }
     },
     {
@@ -21,11 +22,16 @@
       "dest": "/static/$1"
     },
     {
+      "src": "/api/(.*)",
+      "dest": "/index.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.py"
     }
   ],
   "env": {
-    "PYTHONUNBUFFERED": "1"
+    "PYTHONUNBUFFERED": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
   }
 }

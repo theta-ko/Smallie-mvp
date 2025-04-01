@@ -9,8 +9,14 @@ import sys
 # Add the current directory to the path so we can import the app
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import the Flask app from app.py
-from app import app as flask_app
+# Try to import the Vercel-optimized app if it exists, otherwise use the standard app
+try:
+    from app_vercel import app as flask_app
+    print("Using Vercel-optimized Flask app")
+except ImportError:
+    # Fallback to the standard app
+    from app import app as flask_app
+    print("Using standard Flask app")
 
 # Vercel needs this specific style of handler
 def handler(request, **kwargs):

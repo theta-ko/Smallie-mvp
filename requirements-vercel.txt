@@ -6,3 +6,4 @@ flask-sqlalchemy
 flask-wtf
 gunicorn
 psycopg2-binary
+vercel-python
