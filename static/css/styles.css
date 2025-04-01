@@ -993,6 +993,180 @@ section {
     margin-bottom: 0.8rem;
 }
 
+/* Prize Distribution */
+.prize-distribution {
+    margin-top: 2rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.8rem;
+    line-height: 2;
+}
+
+.gold-text {
+    color: var(--gold);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Rules Grid */
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.rule-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.rule-icon {
+    background-color: var(--red);
+    color: var(--white);
+    border-radius: 50%;
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.rule-content h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--black);
+    font-size: 1.8rem;
+}
+
+.rule-content ul {
+    padding-left: 2rem;
+    margin: 0;
+}
+
+.rule-content li {
+    margin-bottom: 0.8rem;
+}
+
+/* Schedule Timeline */
+.schedule-timeline {
+    margin-top: 2rem;
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 80px;
+    top: 40px;
+    bottom: -40px;
+    width: 2px;
+    background-color: var(--red);
+    z-index: 1;
+}
+
+.timeline-item:last-child::before {
+    display: none;
+}
+
+.timeline-date {
+    flex: 0 0 80px;
+    font-weight: 700;
+    padding-top: 1rem;
+}
+
+.timeline-content {
+    flex: 1;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.timeline-content h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--red);
+}
+
+.timeline-note {
+    display: inline-block;
+    background-color: var(--gold);
+    color: var(--black);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+}
+
+/* FAQ List */
+.faq-list {
+    margin-top: 2rem;
+}
+
+.faq-item {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 2rem;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.faq-question {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--black);
+    position: relative;
+    padding-left: 3rem;
+}
+
+.faq-question::before {
+    content: 'Q';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--red);
+}
+
+.faq-answer {
+    padding-left: 3rem;
+    position: relative;
+}
+
+.faq-answer::before {
+    content: 'A';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+}
+
 /* Audience Section */
 .audience {
     background-color: var(--white);
