@@ -608,24 +608,119 @@ section {
     padding: 8rem 0;
 }
 
-.voting h2 {
+.voting h2, .voting h3 {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
+/* Prize Fund Display */
+.prize-fund {
+    text-align: center;
+    margin: 0 auto 4rem;
+    background-color: var(--gold);
+    color: var(--black);
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.prize-fund-label {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.prize-fund-amount {
+    font-size: 3.6rem;
+    font-weight: 900;
+    font-family: var(--font-header);
+    margin-bottom: 1rem;
+}
+
+.prize-fund-note {
+    font-size: 1.4rem;
+    font-style: italic;
+}
+
+/* Vote Tiles Section */
+.vote-tiles-section {
+    margin-bottom: 5rem;
+}
+
+.vote-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.vote-tile {
+    background-color: var(--red);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.vote-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.vote-tile h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.votes-count {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.vote-tile-btn {
+    background-color: var(--white);
+    color: var(--red);
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.vote-tile-btn:hover {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+/* Voting Area */
 .voting-area {
     display: grid;
     grid-template-columns: 1fr;
     gap: 4rem;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .voting-form {
-    background-color: var(--grey-light);
+    background-color: var(--white);
     padding: 3rem;
     border-radius: 10px;
     box-shadow: var(--shadow);
+    border: 1px solid var(--grey-light);
+}
+
+.voting-form h3 {
+    text-align: left;
+    margin-bottom: 2rem;
 }
 
 .form-group {
@@ -683,15 +778,77 @@ section {
     margin-bottom: 2rem;
 }
 
-.voting-info {
+/* Voting Leaderboard */
+.voting-leaderboard {
     padding: 3rem;
-    background-color: var(--grey-light);
+    background-color: var(--white);
     border-radius: 10px;
     box-shadow: var(--shadow);
+    border: 1px solid var(--grey-light);
 }
 
-.voting-info h3 {
-    margin-bottom: 2rem;
+.leaderboard {
+    margin-bottom: 3rem;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--grey-light);
+    transition: var(--transition);
+}
+
+.leaderboard-item:hover {
+    background-color: var(--grey-light);
+}
+
+.leaderboard-rank {
+    width: 3rem;
+    height: 3rem;
+    background-color: var(--grey-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-right: 1.5rem;
+}
+
+.top-1 .leaderboard-rank {
+    background-color: var(--gold);
+    color: var(--black);
+}
+
+.top-2 .leaderboard-rank {
+    background-color: #C0C0C0;
+    color: var(--black);
+}
+
+.top-3 .leaderboard-rank {
+    background-color: #CD7F32;
+    color: var(--white);
+}
+
+.leaderboard-name {
+    flex: 1;
+    font-weight: 700;
+}
+
+.leaderboard-votes {
+    font-weight: 700;
+    color: var(--red);
+}
+
+.voting-info {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--grey-light);
+}
+
+.voting-info h4 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
 }
 
 .voting-info ul {
@@ -699,7 +856,7 @@ section {
 }
 
 .voting-info li {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: flex-start;
 }
@@ -707,7 +864,66 @@ section {
 .voting-info i {
     color: var(--red);
     margin-right: 1rem;
+    font-size: 1.6rem;
+    margin-top: 0.3rem;
+}
+
+/* Payment Options */
+.payment-options {
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: var(--grey-light);
+    border-radius: 10px;
+}
+
+.payment-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.btn-payment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border-radius: 10px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.payment-icon {
+    margin-right: 1rem;
     font-size: 2rem;
+}
+
+.flutterwave-btn {
+    background-color: var(--black);
+    color: var(--white);
+    border: none;
+}
+
+.flutterwave-btn:hover {
+    background-color: #333;
+}
+
+.solana-btn {
+    background-color: var(--gold);
+    color: var(--black);
+    border: none;
+}
+
+.solana-btn:hover {
+    background-color: #FFE44D;
+}
+
+.payment-note {
+    font-size: 1.3rem;
+    color: var(--grey-dark);
+    text-align: center;
 }
 
 /* Overview Section */

@@ -68,7 +68,30 @@ function updateVotePrice() {
     if (votePriceDisplay) {
         const count = parseInt(voteCountInput.value);
         const price = (count * 0.5).toFixed(2);
+        const priceNGN = Math.round(count * 0.5 * 480); // NGN to USD rate (approximate)
+        
+        // Update price in USD
         votePriceDisplay.textContent = price;
+        
+        // Update price in NGN if element exists
+        const voteNgnPriceSpan = document.getElementById('vote-price-ngn');
+        if (voteNgnPriceSpan) {
+            voteNgnPriceSpan.textContent = priceNGN;
+        }
+        
+        // Update modal amounts if visible
+        if (voteModal && voteModal.style.display === 'flex') {
+            const modalVoteTotal = document.getElementById('modal-vote-total');
+            const modalVoteTotalNgn = document.getElementById('modal-vote-total-ngn');
+            
+            if (modalVoteTotal) {
+                modalVoteTotal.textContent = price;
+            }
+            
+            if (modalVoteTotalNgn) {
+                modalVoteTotalNgn.textContent = priceNGN;
+            }
+        }
     }
 }
 
@@ -114,13 +137,33 @@ if (votingForm) {
         e.preventDefault();
         
         const selectedContestant = contestantSelect.options[contestantSelect.selectedIndex].text;
-        const voteCount = voteCountInput.value;
+        const contestantId = contestantSelect.value;
+        const voteCount = parseInt(voteCountInput.value);
         const totalPrice = (voteCount * 0.5).toFixed(2);
+        const totalPriceNGN = Math.round(voteCount * 0.5 * 480); // NGN to USD rate
+        const email = document.getElementById('email').value;
+        
+        // Validate
+        if (voteCount >= 5 && !email) {
+            alert('Email is required for 5 or more votes');
+            return;
+        }
         
         // Update modal content
         modalVoteCount.textContent = voteCount;
         modalContestantName.textContent = selectedContestant;
         modalVoteTotal.textContent = totalPrice;
+        
+        // Update NGN price if element exists
+        const modalVoteTotalNgn = document.getElementById('modal-vote-total-ngn');
+        if (modalVoteTotalNgn) {
+            modalVoteTotalNgn.textContent = totalPriceNGN;
+        }
+        
+        // Store data for payment processing
+        voteModal.dataset.contestantId = contestantId;
+        voteModal.dataset.voteCount = voteCount;
+        voteModal.dataset.email = email;
         
         // Show confirmation modal
         voteModal.style.display = 'flex';

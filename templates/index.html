@@ -132,14 +132,34 @@
     <section id="voting" class="voting">
         <div class="container">
             <h2>Cast Your Vote</h2>
+            
+            <!-- Prize Fund Display -->
+            <div class="prize-fund">
+                <div class="prize-fund-label">Current Prize Pool:</div>
+                <div class="prize-fund-amount"><span id="prize-fund-display">₦0</span></div>
+                <div class="prize-fund-note">90% of votes go to the prize pool</div>
+            </div>
+            
+            <!-- Red Voting Tiles -->
+            <div class="vote-tiles-section">
+                <h3>Quick Vote for Top Contestants</h3>
+                <div id="vote-tiles" class="vote-tiles">
+                    <!-- Tiles will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Voting Form and Leaderboard -->
             <div class="voting-area">
                 <form id="voting-form" class="voting-form">
+                    <h3>Custom Vote</h3>
                     <div class="form-group">
                         <label for="contestant-select">Select Contestant</label>
                         <select id="contestant-select" name="contestant" required>
                             <option value="" disabled selected>Choose a contestant</option>
                             {% for contestant in contestants %}
+                            {% if not contestant.eliminated %}
                             <option value="{{ contestant.id }}">{{ contestant.name }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -153,21 +173,30 @@
                     </div>
                     <div class="form-group">
                         <label for="email">Your Email</label>
-                        <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                        <input type="email" id="email" name="email" placeholder="example@email.com">
+                        <p id="email-required-notice" class="form-hint" style="display: none;">Email required for 5+ votes</p>
                     </div>
                     <div class="vote-total">
-                        <p>Total: $<span id="vote-price">0.50</span></p>
+                        <p>Total: $<span id="vote-price">0.50</span> (₦<span id="vote-price-ngn">240</span>)</p>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Submit Vote</button>
                 </form>
-                <div class="voting-info">
-                    <h3>How Voting Works</h3>
-                    <ul>
-                        <li><i class="fas fa-check-circle"></i> Each vote costs $0.50</li>
-                        <li><i class="fas fa-check-circle"></i> Vote as many times as you want</li>
-                        <li><i class="fas fa-check-circle"></i> Voting closes at midnight daily</li>
-                        <li><i class="fas fa-check-circle"></i> Results are updated in real-time</li>
-                    </ul>
+                
+                <div class="voting-leaderboard">
+                    <h3>Votes Leaderboard</h3>
+                    <div id="votes-leaderboard" class="leaderboard">
+                        <!-- Leaderboard will be populated by JavaScript -->
+                    </div>
+                    <div class="voting-info">
+                        <h4>How Voting Works</h4>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Each vote costs $0.50</li>
+                            <li><i class="fas fa-check-circle"></i> Vote as many times as you want</li>
+                            <li><i class="fas fa-check-circle"></i> Voting closes at 9 PM WAT daily</li>
+                            <li><i class="fas fa-check-circle"></i> Results are updated in real-time</li>
+                            <li><i class="fas fa-check-circle"></i> 90% goes to prize pool, 10% to platform</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -314,9 +343,24 @@
             <span class="close">&times;</span>
             <h2>Confirm Your Vote</h2>
             <p>You are about to cast <span id="modal-vote-count">1</span> vote(s) for <span id="modal-contestant-name">Contestant</span>.</p>
-            <p>Total: $<span id="modal-vote-total">0.50</span></p>
+            <p>Total: $<span id="modal-vote-total">0.50</span> (₦<span id="modal-vote-total-ngn">240</span>)</p>
+            
+            <div class="payment-options">
+                <h3>Choose Payment Method</h3>
+                <div class="payment-buttons">
+                    <button id="pay-flutterwave" class="btn btn-payment flutterwave-btn">
+                        <span class="payment-icon"><i class="fas fa-credit-card"></i></span>
+                        <span class="payment-text">Pay with Card/Bank</span>
+                    </button>
+                    <button id="pay-solana" class="btn btn-payment solana-btn">
+                        <span class="payment-icon"><i class="fas fa-wallet"></i></span>
+                        <span class="payment-text">Pay with Crypto</span>
+                    </button>
+                </div>
+                <p class="payment-note">All payments are secure and processed instantly</p>
+            </div>
+            
             <div class="modal-buttons">
-                <button id="confirm-vote" class="btn btn-primary">Confirm</button>
                 <button id="cancel-vote" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
@@ -386,12 +430,20 @@
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
     
-    <!-- Firebase Configuration -->
+    <!-- External Payment SDKs -->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    
+    <!-- Firebase and Payment Configurations -->
     <script type="module">
         // Make Firebase configuration available to the client-side code
         window.FIREBASE_API_KEY = '{{ firebase_api_key }}';
         window.FIREBASE_PROJECT_ID = '{{ firebase_project_id }}';
         window.FIREBASE_APP_ID = '{{ firebase_app_id }}';
+        
+        // Make payment configurations available to the client-side code
+        window.FLUTTERWAVE_PUBLIC_KEY = '{{ flutterwave_public_key }}';
+        window.SOLANA_PROJECT_ID = '{{ solana_project_id }}';
     </script>
     
     <!-- Stream Link Modal -->
@@ -418,5 +470,7 @@
     <script type="module" src="{{ url_for('static', filename='js/firebase-client.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/contestants.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/signup.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/voting.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/payments.js') }}"></script>
 </body>
 </html>

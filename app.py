@@ -389,6 +389,10 @@ def index():
     firebase_api_key = os.environ.get("FIREBASE_API_KEY", "")
     firebase_project_id = os.environ.get("FIREBASE_PROJECT_ID", "")
     firebase_app_id = os.environ.get("FIREBASE_APP_ID", "")
+    
+    # Get payment credentials from environment
+    flutterwave_public_key = os.environ.get("FLUTTERWAVE_PUBLIC_KEY", "")
+    solana_project_id = os.environ.get("SOLANA_PROJECT_ID", "")
 
     return render_template(
         'index.html', 
@@ -397,7 +401,9 @@ def index():
         current_day=current_day,
         firebase_api_key=firebase_api_key,
         firebase_project_id=firebase_project_id,
-        firebase_app_id=firebase_app_id
+        firebase_app_id=firebase_app_id,
+        flutterwave_public_key=flutterwave_public_key,
+        solana_project_id=solana_project_id
     )
 
 if __name__ == '__main__':
