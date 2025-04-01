@@ -29,6 +29,14 @@
                 <li><a href="#overview">Overview</a></li>
             </ul>
         </nav>
+        <div class="auth-section">
+            <button id="login-button" class="btn btn-secondary">Login</button>
+            <div id="user-profile" class="user-profile" style="display: none;">
+                <img id="user-avatar" class="user-avatar" src="" alt="User Avatar">
+                <span id="user-name" class="user-name">User</span>
+                <button id="logout-button" class="btn-logout">Logout</button>
+            </div>
+        </div>
         <div class="menu-toggle">
             <i class="fas fa-bars"></i>
         </div>
@@ -360,5 +368,16 @@
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
+    
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Make Firebase configuration available to the client-side code
+        window.FIREBASE_API_KEY = '{{ firebase_api_key }}';
+        window.FIREBASE_PROJECT_ID = '{{ firebase_project_id }}';
+        window.FIREBASE_APP_ID = '{{ firebase_app_id }}';
+    </script>
+    
+    <!-- Firebase Client Integration -->
+    <script type="module" src="{{ url_for('static', filename='js/firebase-client.js') }}"></script>
 </body>
 </html>

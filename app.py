@@ -18,17 +18,41 @@ try:
     # Get Firebase credentials from environment variable
     firebase_creds_json = os.environ.get("FIREBASE_CREDENTIALS")
     if firebase_creds_json:
-        cred_dict = json.loads(firebase_creds_json)
-        cred = credentials.Certificate(cred_dict)
-        firebase_admin.initialize_app(cred)
-        db = firestore.client()
-        logging.info("Firebase initialized successfully")
+        try:
+            # For a JSON-formatted string
+            cred_dict = json.loads(firebase_creds_json)
+        except json.JSONDecodeError:
+            # If it's not a valid JSON string, it might be the path to a JSON file
+            if os.path.exists(firebase_creds_json):
+                try:
+                    with open(firebase_creds_json, 'r') as f:
+                        cred_dict = json.load(f)
+                except Exception as file_err:
+                    logging.error(f"Error loading credentials file: {file_err}")
+                    cred_dict = None
+            else:
+                logging.error(f"Firebase credentials file not found: {firebase_creds_json}")
+                cred_dict = None
+        
+        if cred_dict:
+            cred = credentials.Certificate(cred_dict)
+            firebase_admin.initialize_app(cred)
+            db = firestore.client()
+            logging.info("Firebase initialized successfully")
+        else:
+            logging.warning("Could not parse Firebase credentials")
+            db = None
     else:
         logging.warning("FIREBASE_CREDENTIALS not found in environment variables")
         db = None
 except Exception as e:
     logging.error(f"Error initializing Firebase: {e}")
     db = None
+    
+# Log Firebase environment variables (without revealing sensitive data)
+logging.info(f"Firebase Project ID: {os.environ.get('FIREBASE_PROJECT_ID', 'Not Set')}")
+logging.info(f"Firebase App ID available: {'Yes' if os.environ.get('FIREBASE_APP_ID') else 'No'}")
+logging.info(f"Firebase API Key available: {'Yes' if os.environ.get('FIREBASE_API_KEY') else 'No'}")
 
 # Function to initialize the daily tasks in Firebase if they don't exist
 def init_daily_tasks():
@@ -319,8 +343,21 @@ def index():
     # Remove this in production to use the actual competition day
     current_day = 3
     daily_task = get_hardcoded_task(current_day)
+    
+    # Get Firebase credentials from environment
+    firebase_api_key = os.environ.get("FIREBASE_API_KEY", "")
+    firebase_project_id = os.environ.get("FIREBASE_PROJECT_ID", "")
+    firebase_app_id = os.environ.get("FIREBASE_APP_ID", "")
 
-    return render_template('index.html', contestants=contestants, daily_task=daily_task, current_day=current_day)
+    return render_template(
+        'index.html', 
+        contestants=contestants, 
+        daily_task=daily_task, 
+        current_day=current_day,
+        firebase_api_key=firebase_api_key,
+        firebase_project_id=firebase_project_id,
+        firebase_app_id=firebase_app_id
+    )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
