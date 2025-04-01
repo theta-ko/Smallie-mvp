@@ -133,6 +133,8 @@ const checkAuthentication = () => {
     const isAuthenticated = localStorage.getItem('admin_authenticated') === 'true';
     if (!isAuthenticated) {
         loginModal.style.display = 'flex';
+    } else {
+        loginModal.style.display = 'none';
     }
     return isAuthenticated;
 };
@@ -1592,10 +1594,9 @@ const processSolanaPayment = async () => {
 
 // Initialize Admin Dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if user is authenticated
-    if (!checkAuthentication()) {
-        return;
-    }
+    // Check if user is authenticated - but continue loading the dashboard regardless
+    // This allows the login form to be shown while the dashboard is loaded underneath
+    checkAuthentication();
     
     // Load initial data
     loadActiveContestants();
