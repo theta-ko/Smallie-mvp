@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+.env.local
+.env.development
+.env.production
+
+# Replit
+.replit
+.breakpoints
+replit.nix
+.replit.nix
+.config/
+.upm/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Vercel
+.vercel
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System specific
+.DS_Store
+Thumbs.db
+*.swp
+*~
