@@ -76,3 +76,31 @@ If prompted for credentials, enter your GitHub username and personal access toke
 3. Add your custom domain (e.g., smallie.com)
 4. Follow Vercel's instructions to configure your DNS settings
 5. Remember to add the custom domain to Firebase authorized domains list
+
+## 5. Troubleshooting Serverless Function Issues
+
+### Common Deployment Issues
+
+1. **Serverless Function Failed**
+   - Check your vercel.json configuration carefully. Make sure the "src" and "dest" settings correctly point to "index.py".
+   - Ensure your Firebase credentials are correctly formatted (base64-encoded JSON).
+   - Check the Vercel deployment logs for specific errors.
+
+2. **Missing Environment Variables**
+   - Double-check that all required environment variables are set in the Vercel project settings.
+   - For Firebase credentials, ensure you've used the prepare_credentials.py script to convert your service account JSON to base64.
+
+3. **Firebase Authentication Issues**
+   - Verify that your deployed URL has been added to the authorized domains list in Firebase Console.
+
+4. **Static Assets Not Loading**
+   - Ensure your vercel.json includes a proper configuration for the static directory.
+   - Check that all asset paths in your HTML are relative or using the correct base URL.
+
+### Redeploying After Changes
+
+After making any changes to fix issues:
+
+1. Commit your changes to your GitHub repository 
+2. Vercel will automatically redeploy if you've set up continuous deployment
+3. Alternatively, trigger a manual deployment from the Vercel dashboard
