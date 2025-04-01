@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smallie Admin Dashboard</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="admin-header-content">
+                <div class="logo">
+                    <h1>Smallie <span class="admin-badge">Admin</span></h1>
+                </div>
+                <div class="admin-user">
+                    <div class="admin-info">
+                        <span class="admin-name">Admin</span>
+                        <a href="/" class="btn-back">Back to Site</a>
+                    </div>
+                    <a href="#" id="admin-logout" class="btn-logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Dashboard -->
+    <main class="admin-dashboard">
+        <div class="container">
+            <!-- Dashboard Nav -->
+            <div class="dashboard-nav">
+                <div class="nav-item active" data-section="contestants">
+                    <i class="fas fa-users"></i>
+                    <span>Contestants</span>
+                </div>
+                <div class="nav-item" data-section="tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Daily Tasks</span>
+                </div>
+                <div class="nav-item" data-section="payouts">
+                    <i class="fas fa-hand-holding-dollar"></i>
+                    <span>Payouts</span>
+                </div>
+                <div class="nav-item" data-section="stats">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Statistics</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Contestants Section -->
+                <section id="contestants-section" class="content-section active">
+                    <div class="section-header">
+                        <h2>Manage Contestants</h2>
+                        <div class="section-actions">
+                            <div class="section-tabs">
+                                <button class="tab-btn active" data-tab="approved">Active Contestants</button>
+                                <button class="tab-btn" data-tab="pending">Pending Applications</button>
+                                <button class="tab-btn" data-tab="eliminated">Eliminated</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Contestants Tab -->
+                    <div class="tab-content active" id="approved-tab">
+                        <div class="admin-grid" id="active-contestants-grid">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="loading">Loading contestants...</div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Applications Tab -->
+                    <div class="tab-content" id="pending-tab">
+                        <div class="admin-grid" id="pending-applications-grid">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="loading">Loading applications...</div>
+                        </div>
+                    </div>
+
+                    <!-- Eliminated Contestants Tab -->
+                    <div class="tab-content" id="eliminated-tab">
+                        <div class="admin-grid" id="eliminated-contestants-grid">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="loading">Loading eliminated contestants...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Daily Tasks Section -->
+                <section id="tasks-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Manage Daily Tasks</h2>
+                        <div class="section-actions">
+                            <button id="create-task-btn" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Create New Task
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tasks-calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-day">Day</div>
+                            <div class="calendar-date">Date</div>
+                            <div class="calendar-task">Task</div>
+                            <div class="calendar-status">Status</div>
+                            <div class="calendar-actions">Actions</div>
+                        </div>
+                        <div id="tasks-container">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="loading">Loading tasks...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payouts Section -->
+                <section id="payouts-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Manage Payouts</h2>
+                        <div class="section-actions">
+                            <div class="section-tabs">
+                                <button class="tab-btn active" data-tab="daily">Daily Payouts (9%)</button>
+                                <button class="tab-btn" data-tab="final">Final Payout (90%)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Payouts Tab -->
+                    <div class="tab-content active" id="daily-tab">
+                        <div class="payout-summary">
+                            <div class="payout-info">
+                                <h3>Daily Payout Summary</h3>
+                                <div class="payout-stats">
+                                    <div class="payout-stat">
+                                        <span class="stat-label">Today's Votes:</span>
+                                        <span class="stat-value" id="today-votes">0</span>
+                                    </div>
+                                    <div class="payout-stat">
+                                        <span class="stat-label">Today's Revenue:</span>
+                                        <span class="stat-value" id="today-revenue">$0</span>
+                                    </div>
+                                    <div class="payout-stat">
+                                        <span class="stat-label">Daily Payout (9%):</span>
+                                        <span class="stat-value" id="daily-payout">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payout-actions">
+                                <button id="process-daily-payout" class="btn btn-primary">Process Daily Payout</button>
+                            </div>
+                        </div>
+
+                        <h3>Daily Winners</h3>
+                        <div class="payout-grid" id="daily-winners-grid">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="loading">Calculating daily winners...</div>
+                        </div>
+                    </div>
+
+                    <!-- Final Payout Tab -->
+                    <div class="tab-content" id="final-tab">
+                        <div class="payout-summary">
+                            <div class="payout-info">
+                                <h3>Final Payout Summary</h3>
+                                <div class="payout-stats">
+                                    <div class="payout-stat">
+                                        <span class="stat-label">Total Votes:</span>
+                                        <span class="stat-value" id="total-votes">0</span>
+                                    </div>
+                                    <div class="payout-stat">
+                                        <span class="stat-label">Total Revenue:</span>
+                                        <span class="stat-value" id="total-revenue">$0</span>
+                                    </div>
+                                    <div class="payout-stat">
+                                        <span class="stat-label">Final Prize Pool (90%):</span>
+                                        <span class="stat-value" id="final-prize-pool">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payout-actions">
+                                <button id="process-final-payout" class="btn btn-primary">Process Final Payout</button>
+                            </div>
+                        </div>
+
+                        <h3>Final Rankings</h3>
+                        <div class="payout-grid" id="final-rankings-grid">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="loading">Calculating final rankings...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Statistics Section -->
+                <section id="stats-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Statistics Dashboard</h2>
+                        <div class="section-actions">
+                            <div class="date-range">
+                                <select id="stats-range">
+                                    <option value="all">All Time</option>
+                                    <option value="day">By Day</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-overview">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-vote-yea"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Votes</h3>
+                                <div class="stat-value" id="stats-total-votes">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Revenue</h3>
+                                <div class="stat-value" id="stats-total-revenue">$0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Prize Pool</h3>
+                                <div class="stat-value" id="stats-prize-pool">$0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Active Contestants</h3>
+                                <div class="stat-value" id="stats-contestants">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-charts">
+                        <div class="stats-chart-container">
+                            <h3>Votes Per Day</h3>
+                            <div class="chart-container">
+                                <canvas id="votes-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="stats-chart-container">
+                            <h3>Votes Per Contestant</h3>
+                            <div class="chart-container">
+                                <canvas id="contestant-votes-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-table-container">
+                        <h3>Daily Statistics</h3>
+                        <div class="stats-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Date</th>
+                                        <th>Votes</th>
+                                        <th>Revenue</th>
+                                        <th>Daily Winner</th>
+                                        <th>Payout Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats-table-body">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h2>Admin Login</h2>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Edit Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="task-modal-title">Create New Task</h2>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label for="task-day">Day</label>
+                    <select id="task-day" required>
+                        <option value="1">Day 1</option>
+                        <option value="2">Day 2</option>
+                        <option value="3">Day 3</option>
+                        <option value="4">Day 4</option>
+                        <option value="5">Day 5</option>
+                        <option value="6">Day 6</option>
+                        <option value="7">Day 7</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-title">Task Title</label>
+                    <input type="text" id="task-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-description">Task Description</label>
+                    <textarea id="task-description" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="task-status">Status</label>
+                    <select id="task-status" required>
+                        <option value="scheduled">Scheduled</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contestant Detail Modal -->
+    <div id="contestant-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="contestant-modal-title">Contestant Details</h2>
+            <div id="contestant-details">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="modal-buttons">
+                <button id="approve-contestant" class="btn btn-primary">Approve</button>
+                <button id="reject-contestant" class="btn btn-danger">Reject</button>
+                <button id="eliminate-contestant" class="btn btn-warning">Eliminate</button>
+                <button type="button" class="btn btn-secondary close-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payout Modal -->
+    <div id="payout-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="payout-modal-title">Process Payout</h2>
+            <div id="payout-details">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="payment-options">
+                <h3>Choose Payment Method</h3>
+                <div class="payment-buttons">
+                    <button id="pay-flutterwave-admin" class="btn btn-payment flutterwave-btn">
+                        <span class="payment-icon"><i class="fas fa-credit-card"></i></span>
+                        <span class="payment-text">Pay with Flutterwave</span>
+                    </button>
+                    <button id="pay-solana-admin" class="btn btn-payment solana-btn">
+                        <span class="payment-icon"><i class="fas fa-wallet"></i></span>
+                        <span class="payment-text">Pay with Solana</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script type="module">
+        // Make Firebase configuration available to the client-side code
+        window.FIREBASE_API_KEY = '{{ firebase_api_key }}';
+        window.FIREBASE_PROJECT_ID = '{{ firebase_project_id }}';
+        window.FIREBASE_APP_ID = '{{ firebase_app_id }}';
+        
+        // Payment API keys
+        window.FLUTTERWAVE_PUBLIC_KEY = '{{ flutterwave_public_key }}';
+        window.SOLANA_PROJECT_ID = '{{ solana_project_id }}';
+    </script>
+    
+    <!-- Admin Scripts -->
+    <script type="module" src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>
