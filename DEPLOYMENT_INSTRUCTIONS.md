@@ -79,23 +79,31 @@ If prompted for credentials, enter your GitHub username and personal access toke
 
 ## 5. Troubleshooting Serverless Function Issues
 
+### Updated Vercel Configuration
+
+We've moved to a simpler deployment approach using Vercel's API routes feature:
+
+1. The `vercel.json` file has been simplified to use rewrites
+2. A new `/api/index.py` file serves as the entry point
+3. This approach uses Vercel's built-in Python serverless function handling
+
 ### Common Deployment Issues
 
 1. **Serverless Function Failed**
-   - Check your vercel.json configuration carefully. Make sure the "src" and "dest" settings correctly point to "index.py".
-   - Ensure your Firebase credentials are correctly formatted (base64-encoded JSON).
-   - Check the Vercel deployment logs for specific errors.
+   - Make sure the `/api/index.py` file correctly imports your Flask app
+   - Ensure your Firebase credentials are correctly formatted (base64-encoded JSON)
+   - Check the Vercel deployment logs for specific errors
 
 2. **Missing Environment Variables**
-   - Double-check that all required environment variables are set in the Vercel project settings.
-   - For Firebase credentials, ensure you've used the prepare_credentials.py script to convert your service account JSON to base64.
+   - Double-check that all required environment variables are set in the Vercel project settings
+   - For Firebase credentials, ensure you've used the prepare_credentials.py script to convert your service account JSON to base64
 
 3. **Firebase Authentication Issues**
-   - Verify that your deployed URL has been added to the authorized domains list in Firebase Console.
+   - Verify that your deployed URL has been added to the authorized domains list in Firebase Console
 
 4. **Static Assets Not Loading**
-   - Ensure your vercel.json includes a proper configuration for the static directory.
-   - Check that all asset paths in your HTML are relative or using the correct base URL.
+   - Check that all asset paths in your HTML are relative to the root (starting with '/')
+   - Vercel will automatically serve static files from the `/static` directory
 
 ### Redeploying After Changes
 
