@@ -1,8 +1,12 @@
-email-validator
-firebase-admin
-flask
-flask-login
-flask-sqlalchemy
-flask-wtf
-gunicorn
-psycopg2-binary
+# Core requirements
+flask==2.3.3
+firebase-admin==6.2.0
+python-dotenv==1.0.0
+email-validator==2.0.0
+
+# We don't need these for the serverless function itself
+# flask-login
+# flask-sqlalchemy
+# flask-wtf
+# gunicorn
+# psycopg2-binary

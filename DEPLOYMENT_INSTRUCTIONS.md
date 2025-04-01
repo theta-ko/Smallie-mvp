@@ -79,13 +79,27 @@ If prompted for credentials, enter your GitHub username and personal access toke
 
 ## 5. Troubleshooting Serverless Function Issues
 
-### Updated Vercel Configuration
+### Completely Revised Vercel Configuration
 
-We've moved to a simpler deployment approach using Vercel's API routes feature:
+We've implemented a fully serverless approach designed specifically for Vercel:
 
-1. The `vercel.json` file has been simplified to use rewrites
-2. A new `/api/index.py` file serves as the entry point
-3. This approach uses Vercel's built-in Python serverless function handling
+1. The project now uses a dedicated serverless handler in the `/api` directory
+2. Each function in `/api` directory is an independent serverless endpoint
+3. The `vercel.json` file configures routing and resource allocation
+4. Static files are served directly from the `/static` directory
+
+#### Important Deployment Steps
+
+1. **Project Settings in Vercel Dashboard**
+   - When importing the project, select:
+     - Framework Preset: "Other" (not Flask or Python)
+     - Root Directory: `.` (the repository root)
+     - Build Command: (leave empty)
+     - Output Directory: (leave empty)
+
+2. **Environment Variables**
+   - All environment variables must be configured in Vercel's project settings
+   - Firebase credentials must be base64-encoded using the provided script
 
 ### Common Deployment Issues
 
