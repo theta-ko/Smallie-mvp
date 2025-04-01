@@ -573,25 +573,6 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
-    
-    <!-- External Payment SDKs -->
-    <script src="https://checkout.flutterwave.com/v3.js"></script>
-    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    
-    <!-- Firebase and Payment Configurations -->
-    <script type="module">
-        // Make Firebase configuration available to the client-side code
-        window.FIREBASE_API_KEY = '{{ firebase_api_key }}';
-        window.FIREBASE_PROJECT_ID = '{{ firebase_project_id }}';
-        window.FIREBASE_APP_ID = '{{ firebase_app_id }}';
-        
-        // Make payment configurations available to the client-side code
-        window.FLUTTERWAVE_PUBLIC_KEY = '{{ flutterwave_public_key }}';
-        window.SOLANA_PROJECT_ID = '{{ solana_project_id }}';
-    </script>
-    
     <!-- Stream Link Modal -->
     <div id="stream-link-modal" class="modal">
         <div class="modal-content">
@@ -611,6 +592,26 @@
             </form>
         </div>
     </div>
+
+    <!-- Firebase and Payment Configurations -->
+    <script>
+        // Make Firebase configuration available to the client-side code
+        window.FIREBASE_API_KEY = '{{ firebase_api_key }}';
+        window.FIREBASE_PROJECT_ID = '{{ firebase_project_id }}';
+        window.FIREBASE_APP_ID = '{{ firebase_app_id }}';
+        
+        // Make payment configurations available to the client-side code
+        window.FLUTTERWAVE_PUBLIC_KEY = '{{ flutterwave_public_key }}';
+        window.SOLANA_PROJECT_ID = '{{ solana_project_id }}';
+    </script>
+    
+    <!-- External Payment SDKs -->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    
+    <!-- Non-module scripts -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
     
     <!-- Firebase Client Integration -->
     <script type="module" src="{{ url_for('static', filename='js/firebase-client.js') }}"></script>

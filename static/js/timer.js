@@ -92,7 +92,7 @@ const getTodayDate = () => {
     return dayDiff;
 };
 
-// Fetch task for today from Firebase
+// Fetch task for today (using hardcoded tasks instead of Firebase for reliability)
 const fetchCurrentTask = async () => {
     try {
         const dayNumber = getTodayDate();
@@ -101,28 +101,9 @@ const fetchCurrentTask = async () => {
             return getDefaultTask();
         }
         
-        const db = getFirestore();
-        const tasksRef = collection(db, 'tasks');
-        const q = query(
-            tasksRef,
-            where('day', '==', dayNumber)
-        );
+        // Simply use hardcoded tasks for reliability
+        return getHardcodedTask(dayNumber);
         
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            // If no task found in Firestore, use the hardcoded task
-            return getHardcodedTask(dayNumber);
-        }
-        
-        // Task found, use it
-        const taskData = querySnapshot.docs[0].data();
-        return {
-            title: taskData.title,
-            description: taskData.description,
-            day: taskData.day,
-            date: taskData.scheduled_date?.toDate() || new Date(2025, 3, 14 + dayNumber)
-        };
     } catch (error) {
         console.error('Error fetching task:', error);
         return getDefaultTask();
