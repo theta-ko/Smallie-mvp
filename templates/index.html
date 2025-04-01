@@ -56,12 +56,25 @@
         <div class="container">
             <h2>Day {{ current_day }} Task</h2>
             <div class="task-box">
-                <p>{{ daily_tasks[current_day-1] }}</p>
-                <div class="countdown">
-                    <span id="hours">12</span>h
-                    <span id="minutes">30</span>m
-                    <span id="seconds">00</span>s
-                    <p>remaining</p>
+                <div class="task-header">
+                    <h3>{{ daily_task.title }}</h3>
+                    <div class="task-timing">
+                        <span class="new-task-label">New Task at 9 AM WAT</span>
+                    </div>
+                </div>
+                <div class="task-description">
+                    <p>{{ daily_task.description }}</p>
+                </div>
+                <div class="task-timer">
+                    <div class="timer-label">Voting Closes in</div>
+                    <div class="countdown">
+                        <span id="hours">12</span>h
+                        <span id="minutes">30</span>m
+                        <span id="seconds">00</span>s
+                    </div>
+                </div>
+                <div class="task-progress">
+                    <div class="progress-bar" id="voting-progress"></div>
                 </div>
             </div>
         </div>
@@ -346,5 +359,6 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
 </body>
 </html>

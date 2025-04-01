@@ -1,5 +1,9 @@
 import os
+import json
 import logging
+import datetime
+import firebase_admin
+from firebase_admin import credentials, firestore
 from flask import Flask, render_template
 
 # Configure logging
@@ -8,6 +12,208 @@ logging.basicConfig(level=logging.DEBUG)
 # Create Flask app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
+
+# Initialize Firebase
+try:
+    # Get Firebase credentials from environment variable
+    firebase_creds_json = os.environ.get("FIREBASE_CREDENTIALS")
+    if firebase_creds_json:
+        cred_dict = json.loads(firebase_creds_json)
+        cred = credentials.Certificate(cred_dict)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        logging.info("Firebase initialized successfully")
+    else:
+        logging.warning("FIREBASE_CREDENTIALS not found in environment variables")
+        db = None
+except Exception as e:
+    logging.error(f"Error initializing Firebase: {e}")
+    db = None
+
+# Function to initialize the daily tasks in Firebase if they don't exist
+def init_daily_tasks():
+    if db is None:
+        return
+    
+    # Check if tasks collection exists
+    tasks_ref = db.collection('tasks')
+    tasks = tasks_ref.get()
+    
+    # If there are no tasks, add the initial ones
+    if len(list(tasks)) == 0:
+        logging.info("Initializing daily tasks in Firebase")
+        
+        daily_tasks = [
+            {
+                "day": 1,
+                "date": "2025-04-15",
+                "title": "Naija Throwback Dance Challenge",
+                "description": "60-second dance to a classic hit (e.g., P-Square)",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            },
+            {
+                "day": 2,
+                "date": "2025-04-16",
+                "title": "Jollof Wars: Cook-Off Edition",
+                "description": "Cook jollof with ₦500 in 10 minutes, taste it",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            },
+            {
+                "day": 3,
+                "date": "2025-04-17",
+                "title": "Nollywood Skit Showdown",
+                "description": "2-minute Nollywood skit (e.g., Cheating Husband)",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            },
+            {
+                "day": 4,
+                "date": "2025-04-18",
+                "title": "Afrobeat Freestyle Face-Off",
+                "description": "1-minute freestyle on a trending beat (e.g., Burna Boy)",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            },
+            {
+                "day": 5,
+                "date": "2025-04-19",
+                "title": "Owambe Fashion Flex",
+                "description": "Style an owambe outfit from home, 90-second catwalk",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            },
+            {
+                "day": 6,
+                "date": "2025-04-20",
+                "title": "Pidgin Proverbs Remix",
+                "description": "60-second pidgin skit/song from a proverb (e.g., Monkey no fine...)",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            },
+            {
+                "day": 7,
+                "date": "2025-04-21",
+                "title": "Lagos Hustle Pitch",
+                "description": "3-minute pitch as Smallie winner",
+                "release_time": "09:00 WAT",
+                "voting_close_time": "21:00 WAT"
+            }
+        ]
+        
+        # Add tasks to Firestore
+        for task in daily_tasks:
+            tasks_ref.document(f"day_{task['day']}").set(task)
+            
+        logging.info("Daily tasks initialized in Firebase")
+
+# Try to initialize daily tasks
+try:
+    init_daily_tasks()
+except Exception as e:
+    logging.error(f"Error initializing daily tasks: {e}")
+
+# Function to get the current day's task
+def get_current_task():
+    # For demo purposes, calculate the competition day based on current date
+    # Competition runs from April 15 to April 21, 2025
+    today = datetime.datetime.now()
+    
+    # For development/testing, using a fixed date in the competition period
+    # Uncomment the line below to use the real date
+    # today = datetime.datetime(2025, 4, 17)  # Day 3
+    
+    start_date = datetime.datetime(2025, 4, 15)
+    end_date = datetime.datetime(2025, 4, 21)
+    
+    # Calculate current day (1-7)
+    if today < start_date:
+        # Before competition
+        current_day = 0
+        task = {"title": "Competition starts soon", "description": "Stay tuned for Day 1!", "day": 0}
+    elif today > end_date:
+        # After competition
+        current_day = 8
+        task = {"title": "Competition has ended", "description": "Thanks for participating!", "day": 8}
+    else:
+        # During competition
+        delta = today - start_date
+        current_day = delta.days + 1
+        
+        # Try to get task from Firebase
+        if db is not None:
+            try:
+                task_doc = db.collection('tasks').document(f"day_{current_day}").get()
+                if task_doc.exists:
+                    task = task_doc.to_dict()
+                else:
+                    # Fallback to hardcoded task if document doesn't exist
+                    task = get_hardcoded_task(current_day)
+            except Exception as e:
+                logging.error(f"Error fetching task from Firebase: {e}")
+                task = get_hardcoded_task(current_day)
+        else:
+            # Fallback to hardcoded task if Firebase is not available
+            task = get_hardcoded_task(current_day)
+    
+    return current_day, task
+
+# Fallback function to get hardcoded tasks if Firebase is not available
+def get_hardcoded_task(day):
+    tasks = [
+        {
+            "day": 1,
+            "title": "Naija Throwback Dance Challenge",
+            "description": "60-second dance to a classic hit (e.g., P-Square)",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        },
+        {
+            "day": 2,
+            "title": "Jollof Wars: Cook-Off Edition",
+            "description": "Cook jollof with ₦500 in 10 minutes, taste it",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        },
+        {
+            "day": 3,
+            "title": "Nollywood Skit Showdown",
+            "description": "2-minute Nollywood skit (e.g., Cheating Husband)",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        },
+        {
+            "day": 4,
+            "title": "Afrobeat Freestyle Face-Off",
+            "description": "1-minute freestyle on a trending beat (e.g., Burna Boy)",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        },
+        {
+            "day": 5,
+            "title": "Owambe Fashion Flex",
+            "description": "Style an owambe outfit from home, 90-second catwalk",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        },
+        {
+            "day": 6,
+            "title": "Pidgin Proverbs Remix",
+            "description": "60-second pidgin skit/song from a proverb (e.g., Monkey no fine...)",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        },
+        {
+            "day": 7,
+            "title": "Lagos Hustle Pitch",
+            "description": "3-minute pitch as Smallie winner",
+            "release_time": "09:00 WAT",
+            "voting_close_time": "21:00 WAT"
+        }
+    ]
+    
+    return tasks[day-1] if 1 <= day <= 7 else {"title": "No task available", "description": "Check back later"}
 
 @app.route('/')
 def index():
@@ -106,19 +312,15 @@ def index():
         }
     ]
 
-    daily_tasks = [
-        "Create a 3-minute comedy sketch",
-        "Perform a Nigerian song cover",
-        "Recreate a viral TikTok challenge",
-        "Cook a traditional Nigerian dish",
-        "Share your life story in 2 minutes",
-        "Perform a talent unique to you",
-        "Create content with another contestant"
-    ]
+    # Get current day and task
+    current_day, daily_task = get_current_task()
+    
+    # For demonstration purposes, we'll use day 3 (override)
+    # Remove this in production to use the actual competition day
+    current_day = 3
+    daily_task = get_hardcoded_task(current_day)
 
-    current_day = 3  # Example: Day 3 of the 7-day competition
-
-    return render_template('index.html', contestants=contestants, daily_tasks=daily_tasks, current_day=current_day)
+    return render_template('index.html', contestants=contestants, daily_task=daily_task, current_day=current_day)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
