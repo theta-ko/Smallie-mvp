@@ -251,7 +251,9 @@ def index():
             "location": "Lagos",
             "bio": "Content creator and aspiring actor with a passion for storytelling.",
             "votes": 245,
-            "image_url": "https://images.unsplash.com/photo-1522327646852-4e28586a40dd"
+            "image_url": "https://images.unsplash.com/photo-1522327646852-4e28586a40dd",
+            "stream_url": "https://www.youtube.com/watch?v=example1",
+            "eliminated": False
         },
         {
             "id": 2,
@@ -260,7 +262,9 @@ def index():
             "location": "Abuja",
             "bio": "Fashion designer and lifestyle vlogger sharing Nigerian culture.",
             "votes": 312,
-            "image_url": "https://images.unsplash.com/photo-1659540517934-cba43fc64ded"
+            "image_url": "https://images.unsplash.com/photo-1659540517934-cba43fc64ded",
+            "stream_url": "https://www.youtube.com/watch?v=example2",
+            "eliminated": False
         },
         {
             "id": 3,
@@ -269,7 +273,9 @@ def index():
             "location": "Port Harcourt",
             "bio": "Music producer who loves to create fusion of afrobeats and jazz.",
             "votes": 189,
-            "image_url": "https://images.unsplash.com/photo-1589707181684-24a34853641d"
+            "image_url": "https://images.unsplash.com/photo-1589707181684-24a34853641d",
+            "stream_url": "",
+            "eliminated": False
         },
         {
             "id": 4,
@@ -278,7 +284,9 @@ def index():
             "location": "Ibadan",
             "bio": "Dancer and choreographer with unique Afro-contemporary moves.",
             "votes": 278,
-            "image_url": "https://images.unsplash.com/photo-1659540517163-e9a29f4d1251"
+            "image_url": "https://images.unsplash.com/photo-1659540517163-e9a29f4d1251",
+            "stream_url": "https://www.youtube.com/watch?v=example4",
+            "eliminated": False
         },
         {
             "id": 5,
@@ -287,7 +295,9 @@ def index():
             "location": "Kano",
             "bio": "Tech enthusiast and gaming streamer building a Nigerian gaming community.",
             "votes": 201,
-            "image_url": "https://images.unsplash.com/photo-1495434942214-9b525bba74e9"
+            "image_url": "https://images.unsplash.com/photo-1495434942214-9b525bba74e9",
+            "stream_url": "https://www.twitch.tv/example5",
+            "eliminated": False
         },
         {
             "id": 6,
@@ -296,7 +306,9 @@ def index():
             "location": "Enugu",
             "bio": "Makeup artist and beauty influencer creating unique Nigerian looks.",
             "votes": 267,
-            "image_url": "https://images.unsplash.com/photo-1523365280197-f1783db9fe62"
+            "image_url": "https://images.unsplash.com/photo-1523365280197-f1783db9fe62",
+            "stream_url": "",
+            "eliminated": False
         },
         {
             "id": 7,
@@ -305,7 +317,9 @@ def index():
             "location": "Kaduna",
             "bio": "Stand-up comedian bringing laughter and social commentary.",
             "votes": 234,
-            "image_url": "https://images.unsplash.com/photo-1528820184586-dd0d858b7254"
+            "image_url": "https://images.unsplash.com/photo-1528820184586-dd0d858b7254",
+            "stream_url": "https://www.youtube.com/watch?v=example7",
+            "eliminated": False
         },
         {
             "id": 8,
@@ -314,7 +328,9 @@ def index():
             "location": "Owerri",
             "bio": "Culinary enthusiast showcasing modern Nigerian cuisine.",
             "votes": 156,
-            "image_url": "https://images.unsplash.com/photo-1632215861513-130b66fe97f4"
+            "image_url": "https://images.unsplash.com/photo-1632215861513-130b66fe97f4",
+            "stream_url": "",
+            "eliminated": True
         },
         {
             "id": 9,
@@ -323,7 +339,9 @@ def index():
             "location": "Abeokuta",
             "bio": "Fitness trainer promoting healthy living with African exercises.",
             "votes": 198,
-            "image_url": "https://images.unsplash.com/photo-1543234723-b70b104d8e25"
+            "image_url": "https://images.unsplash.com/photo-1543234723-b70b104d8e25",
+            "stream_url": "https://www.youtube.com/watch?v=example9",
+            "eliminated": True
         },
         {
             "id": 10,
@@ -332,10 +350,33 @@ def index():
             "location": "Sokoto",
             "bio": "Traditional storyteller bringing Nigerian folklore to modern audiences.",
             "votes": 222,
-            "image_url": "https://images.unsplash.com/photo-1539414785349-55cfff23f5b9"
+            "image_url": "https://images.unsplash.com/photo-1539414785349-55cfff23f5b9",
+            "stream_url": "https://www.youtube.com/watch?v=example10",
+            "eliminated": False
         }
     ]
 
+    # Try to get contestants from Firebase if available
+    if db is not None:
+        try:
+            contestants_ref = db.collection('contestants')
+            contestants_docs = contestants_ref.get()
+            
+            # If we have contestants in Firebase, use them instead
+            if len(list(contestants_docs)) > 0:
+                firestore_contestants = [doc.to_dict() for doc in contestants_docs]
+                # Only replace if we got valid data
+                if len(firestore_contestants) > 0:
+                    contestants = firestore_contestants
+                    logging.info(f"Loaded {len(contestants)} contestants from Firestore")
+            else:
+                # Initialize Firebase with our mock data if empty
+                for contestant in contestants:
+                    contestants_ref.document(str(contestant['id'])).set(contestant)
+                logging.info("Initialized contestants in Firestore")
+        except Exception as e:
+            logging.error(f"Error loading contestants from Firebase: {e}")
+    
     # Get current day and task
     current_day, daily_task = get_current_task()
     

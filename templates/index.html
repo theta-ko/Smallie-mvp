@@ -92,18 +92,35 @@
     <section id="contestants" class="contestants">
         <div class="container">
             <h2>Meet The Contestants</h2>
+            <div class="section-description">
+                <p>These 10 talented Nigerians are competing for the grand prize. Watch their daily livestreams and vote for your favorites!</p>
+                <button class="btn btn-apply">Join as Contestant</button>
+            </div>
             <div class="contestants-grid">
                 {% for contestant in contestants %}
                 <div class="contestant-card" data-contestant-id="{{ contestant.id }}">
                     <div class="contestant-img">
                         <img src="{{ contestant.image_url }}" alt="{{ contestant.name }}">
                         <div class="votes-badge">{{ contestant.votes }} votes</div>
+                        {% if contestant.eliminated %}
+                        <div class="eliminated-badge">Eliminated</div>
+                        {% endif %}
                     </div>
                     <div class="contestant-info">
                         <h3>{{ contestant.name }}</h3>
                         <p class="contestant-location">{{ contestant.age }} | {{ contestant.location }}</p>
-                        <p class="contestant-bio">{{ contestant.bio }}</p>
-                        <button class="btn btn-vote" data-id="{{ contestant.id }}">Vote</button>
+                        <p class="contestant-bio">{{ contestant.bio | truncate(50) }}</p>
+                        <div class="contestant-actions">
+                            <a href="{{ contestant.stream_url|default('#') }}" target="_blank" class="btn btn-watch {% if not contestant.stream_url %}disabled{% endif %}">
+                                <i class="fas fa-play-circle"></i> Watch Stream
+                            </a>
+                            <button class="btn btn-add-stream hidden" data-id="{{ contestant.id }}">
+                                <i class="fas fa-link"></i> Add Stream
+                            </button>
+                            <button class="btn btn-vote" data-id="{{ contestant.id }}">
+                                <i class="fas fa-heart"></i> Vote
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -354,7 +371,7 @@
                     <textarea id="app-why" name="why" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="app-social">Social Media Handles (if any)</label>
+                    <label for="app-social">X (Twitter) Handle</label>
                     <input type="text" id="app-social" name="social" placeholder="@username">
                 </div>
                 <div class="form-group">
@@ -377,7 +394,29 @@
         window.FIREBASE_APP_ID = '{{ firebase_app_id }}';
     </script>
     
+    <!-- Stream Link Modal -->
+    <div id="stream-link-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Stream Link</h2>
+            <p>Add a streaming link for this contestant. This will allow viewers to watch their performance.</p>
+            <form id="stream-link-form">
+                <div class="form-group">
+                    <label for="stream-link-input">Stream URL</label>
+                    <input type="url" id="stream-link-input" name="stream_url" placeholder="https://youtu.be/example" required>
+                    <p class="form-hint">Enter the full URL to the contestant's stream (YouTube, Twitch, etc.)</p>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" id="stream-link-submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <!-- Firebase Client Integration -->
     <script type="module" src="{{ url_for('static', filename='js/firebase-client.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/contestants.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/signup.js') }}"></script>
 </body>
 </html>

@@ -116,7 +116,57 @@ async function getContestantDetails(contestantId) {
     }
 }
 
-// Vote submission
+// Set up direct vote buttons on contestant cards
+const contestantVoteButtons = document.querySelectorAll('.contestant-card .btn-vote');
+if (contestantVoteButtons.length > 0) {
+    contestantVoteButtons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            // Get contestant ID from button
+            const contestantId = button.dataset.id;
+            const card = button.closest('.contestant-card');
+            
+            // Don't allow voting on eliminated contestants
+            if (card.classList.contains('eliminated')) {
+                alert('This contestant has been eliminated and can no longer receive votes.');
+                return;
+            }
+            
+            // Get contestant name from card
+            const contestantName = card.querySelector('h3').textContent;
+            
+            // Pre-select this contestant in the main voting form if it exists
+            const selectElement = document.getElementById('contestant-select');
+            if (selectElement) {
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    if (selectElement.options[i].value === contestantId) {
+                        selectElement.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            
+            // Default to 1 vote
+            const voteCount = 1;
+            
+            // Update modal content
+            modalContestantName.textContent = contestantName;
+            modalVoteCount.textContent = voteCount;
+            modalVoteTotal.textContent = (voteCount * 0.5).toFixed(2);
+            
+            // Show confirmation modal
+            voteModal.style.display = 'flex';
+            
+            // Store data for confirmation
+            voteModal.dataset.contestantId = contestantId;
+            voteModal.dataset.voteCount = voteCount;
+            voteModal.dataset.email = ''; // Will prompt for email later if needed
+        });
+    });
+}
+
+// Vote submission from the main form
 if (voteForm) {
     const selectElement = document.getElementById('contestant-select');
     const voteCountInput = document.getElementById('vote-count');
@@ -130,6 +180,9 @@ if (voteForm) {
         const price = (count * 0.5).toFixed(2);
         votePriceElement.textContent = price;
     }
+    
+    // Export the function for use in other modules
+    window.updateVotePrice = updateVotePrice;
     
     // Set up vote counter buttons
     if (decreaseButton) {
