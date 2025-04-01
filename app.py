@@ -19,20 +19,34 @@ try:
     firebase_creds_json = os.environ.get("FIREBASE_CREDENTIALS")
     if firebase_creds_json:
         try:
-            # For a JSON-formatted string
-            cred_dict = json.loads(firebase_creds_json)
-        except json.JSONDecodeError:
-            # If it's not a valid JSON string, it might be the path to a JSON file
-            if os.path.exists(firebase_creds_json):
+            # Try to decode base64 (for Vercel deployment)
+            import base64
+            try:
+                decoded_creds = base64.b64decode(firebase_creds_json).decode('utf-8')
+                cred_dict = json.loads(decoded_creds)
+                logging.info("Successfully decoded base64 Firebase credentials")
+            except Exception as base64_err:
+                # If not base64, try direct JSON parsing
                 try:
-                    with open(firebase_creds_json, 'r') as f:
-                        cred_dict = json.load(f)
-                except Exception as file_err:
-                    logging.error(f"Error loading credentials file: {file_err}")
-                    cred_dict = None
-            else:
-                logging.error(f"Firebase credentials file not found: {firebase_creds_json}")
-                cred_dict = None
+                    # For a JSON-formatted string
+                    cred_dict = json.loads(firebase_creds_json)
+                    logging.info("Successfully parsed Firebase credentials as JSON string")
+                except json.JSONDecodeError:
+                    # If it's not a valid JSON string, it might be the path to a JSON file
+                    if os.path.exists(firebase_creds_json):
+                        try:
+                            with open(firebase_creds_json, 'r') as f:
+                                cred_dict = json.load(f)
+                                logging.info("Successfully loaded Firebase credentials from file")
+                        except Exception as file_err:
+                            logging.error(f"Error loading credentials file: {file_err}")
+                            cred_dict = None
+                    else:
+                        logging.error(f"Firebase credentials file not found: {firebase_creds_json}")
+                        cred_dict = None
+        except Exception as parse_err:
+            logging.error(f"Error parsing Firebase credentials: {parse_err}")
+            cred_dict = None
         
         if cred_dict:
             cred = credentials.Certificate(cred_dict)
