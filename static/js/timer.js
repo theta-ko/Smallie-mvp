@@ -3,15 +3,6 @@
  * This script manages the countdown timer, progress bar, and current task display
  */
 
-import { 
-    getFirestore,
-    collection,
-    getDocs,
-    query,
-    where,
-    limit
-} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
-
 // DOM Elements
 const hoursElement = document.getElementById('hours');
 const minutesElement = document.getElementById('minutes');
@@ -153,44 +144,44 @@ const getHardcodedTask = (day) => {
     const tasks = [
         {
             day: 1,
-            title: "Lagos Fashion Showcase",
-            description: "Contestants will showcase Nigerian fashion trends in a livestream runway show. Highlight traditional and modern styles with a personal twist.",
+            title: "Naija Throwback Dance Challenge",
+            description: "Perform a 60-second dance to a classic Nigerian hit (e.g., P-Square, Fela).",
             date: new Date(2025, 3, 15)
         },
         {
             day: 2,
-            title: "Nigerian Cuisine Cook-Off",
-            description: "Contestants will prepare and present a signature Nigerian dish while explaining its cultural significance and regional variations.",
+            title: "Jollof Wars: Cook-Off Edition",
+            description: "Cook jollof rice with ₦500 in 10 minutes, taste and hype it.",
             date: new Date(2025, 3, 16)
         },
         {
             day: 3,
-            title: "Music & Dance Performance",
-            description: "Contestants will perform traditional or modern Nigerian music and dance routines, showcasing the rich cultural heritage.",
+            title: "Nollywood Skit Showdown",
+            description: "Act a 2-minute Nollywood-style skit (e.g., Cheating Husband).",
             date: new Date(2025, 3, 17)
         },
         {
             day: 4,
-            title: "Lagos Street Market Challenge",
-            description: "Contestants will navigate a bustling market to find specific items within a budget, showcasing negotiation skills and market knowledge.",
+            title: "Afrobeat Freestyle Face-Off",
+            description: "Freestyle a 1-minute rap/song on a trending beat (e.g., Burna Boy).",
             date: new Date(2025, 3, 18)
         },
         {
             day: 5,
-            title: "Nigerian History Trivia",
-            description: "Contestants will participate in a knowledge quiz about Nigerian history, arts, sports, and current events.",
+            title: "Owambe Fashion Flex",
+            description: "Style an owambe outfit from home, model in a 90-second catwalk.",
             date: new Date(2025, 3, 19)
         },
         {
             day: 6,
-            title: "Community Spotlight",
-            description: "Contestants will highlight a local community initiative or charity, raising awareness for important causes in Nigeria.",
+            title: "Pidgin Proverbs Remix",
+            description: "Turn a proverb (e.g., Monkey no fine...) into a 60-second pidgin skit/song.",
             date: new Date(2025, 3, 20)
         },
         {
             day: 7,
-            title: "Final Talent Showcase",
-            description: "The grand finale where contestants demonstrate their signature talents and make their final case to viewers and voters.",
+            title: "Lagos Hustle Pitch",
+            description: "Pitch yourself as Smallie winner in a 3-minute video.",
             date: new Date(2025, 3, 21)
         }
     ];
